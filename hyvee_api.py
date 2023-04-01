@@ -1,6 +1,5 @@
 import requests
 import json
-
 base_url = "https://www.hy-vee.com/aisles-online"
 	
 # passes user-inputted string to first API request
@@ -40,9 +39,7 @@ def makeRequest(json_data, endpoint):
 # creates new json object out of data
 def createJsonOutput(output):
 	j = json.loads(output)
-	parsed_output = {
-		"products": [],	
-	}
+	parsed_output = []
 	for i in range(len(j['data']['products']['products'])):
 		item =  j['data']['products']['products'][i]
 		prod = {
@@ -62,7 +59,7 @@ def createJsonOutput(output):
 				prod['otherImages'].append(im['url'])
 
 
-		parsed_output['products'].append(prod)			
+		parsed_output.append(prod)			
 
 	return parsed_output
 

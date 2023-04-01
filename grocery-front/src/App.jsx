@@ -3,35 +3,41 @@ import ReactDOM from "react-dom";
 
 import "./index.css";
 
-async function getData() {
+const App = () => {
 	let j = {searchTerm:"bread", numResults:3};
 	let jstr = JSON.stringify(j);
-	const res = await fetch("http://localhost:5000/find-item", {
-			method: "POST",
-			//mode: "cors",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			cache: "no-cache",
-			body: jstr,
-		
-		});
-	return res.json();
-}
-
-const App = () => {
-	const [prod, d] = useState([]);
+	const [products, setList] = useState([]);
 
 	useEffect(() => {
-		getData();
+		prods();
+		//console.log(products);
 	}, []);
+
+	const prods = async () => {
+		const res = await fetch("http://localhost:5000/find-item", {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				"Content-Type":"application/json",
+			},
+			body: jstr,
+		});
+		setList(await res.json());
+		//console.log(await res.json());
+	}
+
+	
 
   return (
 
   <div className="container">
-    <ul>
-    { prod.map((p) => <li key={p}>{p}</li>) }
-    </ul>
+  {products.map((p) => (
+  	<>
+  	<p>{p.name} {p.size}</p>
+	<p>{p.price}</p>
+	</>
+
+  ))}
   </div>
 
   );
