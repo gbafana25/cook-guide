@@ -11,8 +11,12 @@ Use Flask as backend to interact with store's API.  Use React on frontend (hopef
 	- data from search querys can also be saved to reduce API requests (rate limits unknown)
 
 ## About Hy-Vee GraphQL API
-- product search: returns basic product info (price, name, size, aisle/location, whether it's on sale, etc.) as well as images
+
+Two requests are required in order to get a list of potential products. Each GraphQL query is stored in a JSON format in the project's home directory.
+
+1. Get product IDs from first endpoint, `/GetProductsAndFiltersFromElasticsearch`.  These IDs are then passed to the 2nd call.
+2. product matches: returns basic product info (price, name, size, aisle/location, whether it's on sale, etc.) as well as images
+
 
 ## TODO:
-- modify graphql query so that it can be reused
-
+- start React frontend

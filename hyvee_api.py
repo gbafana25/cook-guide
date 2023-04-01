@@ -3,37 +3,41 @@ import json
 
 base_url = "https://www.hy-vee.com/aisles-online"
 	
-
-def searchQuery(term):
+# passes user-inputted string to first API request
+def runQuery(term, num):
 	f = open("search_query.json", "r")
 	d = json.load(f) 
 	d['variables']['input']['searchTerm'] = term
-	d['variables']['input']['pageInfoInput']['pageSize'] = 5 
+	d['variables']['input']['pageInfoInput']['pageSize'] = num 
 	q_string = json.dumps(d, indent=4)
 	
-	response = makeRequest(q_string, "search_data.json")
+	response = makeRequest(q_string, "/api/graphql/two-legged/GetProductsAndFiltersFromElasticsearch")
+
 	return response
 
+# uses product ids from 1st request to get full product information
 def getProductData(id_list):
 	f = open("product_query.json", "r")
 	d = json.load(f) 
 
+	# number of items returned depends on length of whereIds
+	# this is already limited in getQuery() 
 	d['variables']['whereIds'] = id_list
-	
-	
+		
 	q_string = json.dumps(d, indent=4)
 
-	response = makeRequest(q_string, "product_output.json")
+	response = makeRequest(q_string, "/api/graphql/two-legged/LoadSearchProductsForProductCardsQuery")
 	return response
 
-def makeRequest(json_data, outfile_name):
+
+# request helper method
+def makeRequest(json_data, endpoint):
 	h = {"Content-Length":str(len(json_data)), "Content-Type":"application/json"}
 
-	j = requests.post(base_url+"/api/graphql/two-legged/LoadSearchProductsForProductCardsQuery", headers=h, data=json_data)
-	#res = open(outfile_name, "w+")
-	#res.write(j.text)
+	j = requests.post(base_url+endpoint, headers=h, data=json_data)
 	return j.text
 
+# creates new json object out of data
 def createJsonOutput(output):
 	j = json.loads(output)
 	parsed_output = {
@@ -47,12 +51,22 @@ def createJsonOutput(output):
 			'price': item['storeProduct']['price'],
 			'priceMultiple': item['storeProduct']['priceMultiple'],
 			'isOnSale': item['storeProduct']['onSale'],
+			'primaryImage':'',
+			'otherImages': [],
 			
 		}
+		for im in item['item']['images']:
+			if im['isPrimaryImage'] == True:
+				prod['primaryImage'] = im['url']
+			else:
+				prod['otherImages'].append(im['url'])
+
+
 		parsed_output['products'].append(prod)			
 
-	return json.dumps(parsed_output)
+	return parsed_output
 
+# prints final json object
 def printOutput(output):
 	j = json.loads(output)
 	for i in range(len(j['products'])):
@@ -63,9 +77,11 @@ def printOutput(output):
 			print("On sale, " + str(item['priceMultiple']) + " for " + str(item['price']))
 		else:
 			print("Price: " + str(item['price']))
+		
 		print()
 
-def readPrelimSearch(search_data):
+# grabs list of product IDs associated with search term
+def getProductIds(search_data):
 	j = json.loads(search_data)
 	ids = []
 	for i in range(len(j['data']['searchProductsResultV2']['searchProducts'])):
@@ -74,13 +90,3 @@ def readPrelimSearch(search_data):
 	return ids
 	
 
-if __name__ == "__main__":
-	item = input("Enter an item to search: ")
-	print()
-	search_resp = searchQuery(item)
-	prod_ids = readPrelimSearch(search_resp)
-	out = getProductData(prod_ids)
-	fmted = createJsonOutput(out)
-	print(fmted)
-	#printOutput(fmted)
-	
