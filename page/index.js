@@ -18,7 +18,8 @@ function displayItems() {
 		//console.log(items);
 		for(var i = 0; i < dis.length; i++) {
 			var n = document.createElement('li');
-			n.appendChild(document.createTextNode(dis[i].name));
+			var addstr = dis[i].name+" "+dis[i].price+" "+dis[i].size;
+			n.appendChild(document.createTextNode(addstr));
 			document.querySelector('ul').appendChild(n);
 		}
 		//let e = a.createElement('li');

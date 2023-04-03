@@ -20,3 +20,5 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 ## TODO:
 - start React frontend
+- add additional price sources (Walmart)?
+- improve parsing of nutrition labels, add for ingredient labels
