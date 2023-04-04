@@ -17,8 +17,11 @@ Two requests are required in order to get a list of potential products. Each Gra
 1. Get product IDs from first endpoint, `/GetProductsAndFiltersFromElasticsearch`.  These IDs are then passed to the 2nd call.
 2. product matches: returns basic product info (price, name, size, aisle/location, whether it's on sale, etc.) as well as images
 
+**Note: For rate limiting, find out if switching the user agent circumvents it.  If thiis would be used to deploy as a service, it would not be able to accept a high volume of requests exceeding that of a normal browser**
+
 
 ## TODO:
-- start React frontend
+- start frontend
 - add additional price sources (Walmart)?
 - improve parsing of nutrition labels, add for ingredient labels
+

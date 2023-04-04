@@ -6,6 +6,7 @@ import requests
 import hyvee_api as hyvee
 import os
 import pytesseract
+import cv2
 import json
 import shutil
 
@@ -31,10 +32,10 @@ def findItem():
 
 	return hyvee.createJsonOutput(prods) 
 
-def parseNutritionLabel(img):
+def parseNutritionLabel(img, start):
 	d = []
-	d.append(img[2]+" "+img[3]+" "+img[4]+" "+img[5])
-	for i in range(len(img)):
+	d.append(img[start+2]+" "+img[start+3]+" "+img[start+4]+" "+img[start+5])
+	for i in range(start, len(img)):
 		img[i] = img[i].lower()
 		if img[i] == "serving" and img[i+1] == "size":
 			d.append("Serving size: "+img[i+2]+" "+img[i+3]+" "+img[i+4])
@@ -45,6 +46,32 @@ def parseNutritionLabel(img):
 
 	return d
 	
+@app.route("/ingredients", methods=["POST"])
+def getIngredients():
+	if request.method != "POST":
+		return badRequestType()
+	data = json.loads(request.data)
+	image_urls = data['urls']
+	for im in image_urls:
+		r = requests.get(im, stream=True)
+		r.raw.decode_content = True
+
+		# delete temp.jpg when finished
+
+		with open("temp.jpg", "wb+") as temp_img:
+			shutil.copyfileobj(r.raw, temp_img)
+
+		
+		# not all info from labels appears in array
+		# image should also be displayed in frontend for now
+		imgtext = pytesseract.image_to_string("temp.jpg")
+		start = imgtext.replace('\n', ' ').split(' ')
+		print(start)
+		if start[0][:10].lower() == "ingredients" or start[0][:3].lower() == "made":
+			return {"ingredients":imgtext} 
+
+	os.remove("temp.jpg")
+	return {"status":"failed", "msg":"no ingredients list found"}
 
 @app.route("/nutrition", methods=["POST"])
 def getNutritionFacts():
@@ -65,11 +92,14 @@ def getNutritionFacts():
 		
 		# not all info from labels appears in array
 		# image should also be displayed in frontend for now
-		imgtext = pytesseract.image_to_string("temp.jpg")
+		jpg = cv2.imread("temp.jpg")
+		imgtext = pytesseract.image_to_string(jpg)
 		imgtext = imgtext.replace('\n', ' ').split(' ')	
 		
-		if imgtext[0] == "Nutrition" and imgtext[1] == "Facts":
-			return parseNutritionLabel(imgtext)
+		print(imgtext)
+		for i in range(len(imgtext)):
+			if imgtext[i].lower() == "nutrition" and imgtext[i+1].lower() == "facts":
+				return parseNutritionLabel(imgtext, i)
 
 	os.remove("temp.jpg")
 	return {"status":"failed"}
