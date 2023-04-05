@@ -9,6 +9,7 @@ Use Flask as backend to interact with store's API.  Use React on frontend (hopef
 - top options from product search are returned, user can compare and choose one
 - items' data is saved in current list, and also backed up to be included in future grocery lists
 	- data from search querys can also be saved to reduce API requests (rate limits unknown)
+- Reminder: can get rate limited if same request (search term is reused) is made multiple times. Changing the search term seems to immediately fix it.
 
 ## About Hy-Vee GraphQL API
 
@@ -24,3 +25,4 @@ Two requests are required in order to get a list of potential products. Each Gra
 - start frontend
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
 - add any fields from baker's API as needed 
+

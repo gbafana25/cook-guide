@@ -31,7 +31,11 @@ def parseProductData(raw):
 		
 		# REMINDER: also could include nfor, nforprice, unit price, price
 		prod['price'] = item['price']['storePrices']['regular']['defaultDescription']
-		prod['nutrition'] = item['nutrition']
+		try:
+			prod['nutrition'] = item['nutrition']
+		except KeyError:
+			prod['nutrition'] = "No nutrition info found"
+
 		prod['categories'] = []
 		for c in item['item']['categories']:
 			if c['name'] not in prod['categories']:
@@ -52,6 +56,7 @@ def getProductInfo(ids):
 		p["filter.gtin13s"].append(i)	
 
 	req = requests.get(base_url+"/product/v2/products", headers=h, params=p)
+	
 	#print(req.text)
 	return parseProductData(req.text)
 

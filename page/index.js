@@ -1,7 +1,7 @@
 
 
 function displayItems() {
-	const query = {"searchTerm":"hummus", "numResults":10};
+	const query = {"searchTerm":"rice", "numResults":4};
 	let a = document.getElementById('item-list');
 
 	fetch("http://localhost:5000/find-item", {
