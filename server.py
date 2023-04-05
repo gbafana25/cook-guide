@@ -3,7 +3,8 @@
 from flask import Flask, request
 from flask_cors import CORS
 import requests
-import hyvee_api as hyvee
+#import hyvee_api as hyvee
+import bakers_api as bakers
 import os
 import pytesseract
 import cv2
@@ -26,11 +27,13 @@ def findItem():
 		return badRequestType()		
 		
 	data = json.loads(request.data)
-	resp = hyvee.runQuery(data['searchTerm'], data['numResults'])		
-	ids = hyvee.getProductIds(resp)
-	prods = hyvee.getProductData(ids)
+	#resp = hyvee.runQuery(data['searchTerm'], data['numResults'])		
+	ids = bakers.getProductIds(data['searchTerm'], data['numResults'])
+	#ids = hyvee.getProductIds(resp)
+	#prods = hyvee.getProductData(ids)
+	output = bakers.getProductInfo(ids)
 
-	return hyvee.createJsonOutput(prods) 
+	return output 
 
 def parseNutritionLabel(img, start):
 	d = []
@@ -66,7 +69,7 @@ def getIngredients():
 		# image should also be displayed in frontend for now
 		imgtext = pytesseract.image_to_string("temp.jpg")
 		start = imgtext.replace('\n', ' ').split(' ')
-		print(start)
+		#print(start)
 		if start[0][:10].lower() == "ingredients" or start[0][:3].lower() == "made":
 			return {"ingredients":imgtext} 
 
@@ -96,7 +99,7 @@ def getNutritionFacts():
 		imgtext = pytesseract.image_to_string(jpg)
 		imgtext = imgtext.replace('\n', ' ').split(' ')	
 		
-		print(imgtext)
+		#print(imgtext)
 		for i in range(len(imgtext)):
 			if imgtext[i].lower() == "nutrition" and imgtext[i+1].lower() == "facts":
 				return parseNutritionLabel(imgtext, i)
