@@ -21,7 +21,6 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 
 ## TODO:
-- switch to baker's API as primary source, since it holds more information (nutrition info is already in text form)
 - start frontend
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
-
+- add any fields from baker's API as needed 

@@ -1,11 +1,21 @@
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
 <title>Grocery List</title>
 
 <body>
-<h1 id='title'>Grocery List</h1>
 
 
 <div id="app"></div>
-<ul id="item-list"></ul>
+
+<script id="basic-info" type="text/x-handlebars">
+<h1 id='title'>Grocery List</h1>
+	<div>
+		{{#each products}}
+		<p>{{this.name}} - {{this.price}} - {{this.categories}}<p>
+		<br>
+		{{/each}}
+	</div>
+</script>
 
 <script src="index.js"></script>
 </body>
