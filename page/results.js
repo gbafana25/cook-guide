@@ -1,7 +1,9 @@
 
 
 function displayItems() {
-	const query = {"searchTerm":"rice", "numResults":4};
+	const full = new URL(window.location.toLocaleString()).searchParams;
+	//console.log(full.get('searchTerm'));
+	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults')};
 	let a = document.getElementById('item-list');
 
 	fetch("http://localhost:5000/find-item", {
