@@ -32,7 +32,12 @@ def parseProductData(raw):
 		# REMINDER: also could include nfor, nforprice, unit price, price
 		prod['price'] = item['price']['storePrices']['regular']['defaultDescription']
 		try:
-			prod['nutrition'] = item['nutrition']
+			#prod['nutrition'] = item['nutrition']
+			prod['allergens'] = item['nutrition']['allergens']
+			prod['ingredients'] = item['nutrition']['components'][0]['ingredients']
+			prod['nutritionFacts'] = [] 
+			for f in item['nutrition']['components'][0]['preparationStates'][0]['nutriFacts']:
+				prod['nutritionFacts'].append(f['name']+" "+f['value']+f['abbreviation'])
 		except KeyError:
 			prod['nutrition'] = "No nutrition info found"
 
@@ -43,7 +48,8 @@ def parseProductData(raw):
 
 		prod['urls'] = []
 		for u in item['item']['images']:
-			prod['urls'].append(u)
+			if "/large/" in u['url']:
+				prod['urls'].append(u['url'])
 		parsed.append(prod)
 
 	#print(parsed)

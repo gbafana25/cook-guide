@@ -1,0 +1,22 @@
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="product-view.js"></script>
+
+<title>Product View</title>
+
+<body>
+<h1 id='title' class="font-mono text-slate-900 bg-blue-500 font-bold text-7xl px-20 py-20 shadow-lg italic">[Product name]</h1>
+
+<script id="product" type="text/x-handlebars">
+	<h1>{{name}}</h1>
+
+	<p>{{price}}</p>
+	<p>{{categories}}</p><br>
+	<p>{{allergens}}</p>
+	<img class="object-contain h-80 w-90 block ml-auto pr-10 shadow-lg rounded-sm" src={{image}} alt={{name}}>
+</script>
+
+</body>
+
+
+
