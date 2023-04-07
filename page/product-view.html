@@ -5,15 +5,38 @@
 <title>Product View</title>
 
 <body>
-<h1 id='title' class="font-mono text-slate-900 bg-blue-500 font-bold text-7xl px-20 py-20 shadow-lg italic">[Product name]</h1>
+<h1 id='title' class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">[Product name]</h1>
 
 <script id="product" type="text/x-handlebars">
-	<h1>{{name}}</h1>
+	<h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">{{name}}</h1>
 
-	<p>{{price}}</p>
-	<p>{{categories}}</p><br>
-	<p>{{allergens}}</p>
-	<img class="object-contain h-80 w-90 block ml-auto pr-10 shadow-lg rounded-sm" src={{image}} alt={{name}}>
+	<div class="flex p-40">
+	<div class="block">
+	<div class="px-20 py-10 shadow-xl mt-10 ml-20 mr-60">
+	<p class="font-mono text-slate-900 font-bold text-3xl my-4">{{price}}</p>
+	<p class="font-mono text-slate-900 my-4">{{categories}}</p>
+	</div>
+
+	<div class="p-20 mt-10 ml-20 mr-60 shadow-xl">
+	<p class="font-mono text-slate-900 underline mb-2">Ingredients</p>
+	<p class="font-mono text-slate-900">{{ingredients}}</p>
+	<p class="font-mono text-slate-900 pt-10 pb-5 underline">Nutrition Facts</p>
+	<div class="shadow-lg pl-30 py-10 pr-30">
+	{{#each nutri_facts}}
+		<p class="font-mono text-slate-900 p-1 pl-24 font-semibold">{{this}}</p>
+	{{/each}}
+	</div>
+	<p class="font-mono text-slate-900 underline mb-2 pt-10">Allergens</p>
+	<p class="font-mono text-slate-900">{{allergens}}</p>
+	</div>
+	</div>
+	<br>
+
+	<div class="block">
+	<img class="object-contain mr-10 h-80 w-90 object-right rounded-xl shadow-xl p-4" src={{image}} alt={{name}}>
+	<button class="ml-10 mt-20 p-4 px-7 rounded-xl bg-red-600 text-white duration-500 hover:bg-red-400">Add</button>
+	<div>
+	</div>
 </script>
 
 </body>
