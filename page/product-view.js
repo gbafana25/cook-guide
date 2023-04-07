@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		"image": full.get('image'),
 		"ingredients": full.get('ingredients'),
 		"nutri_facts": narray,
+		"calories": full.get('cal'),
 	};
 
 	let scr = Handlebars.compile(view);

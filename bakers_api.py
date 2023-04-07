@@ -23,6 +23,7 @@ def getProductIds(query, num):
 	return ids
 
 def parseProductData(raw):
+	#print(raw)
 	data = json.loads(raw)	
 	parsed = []
 	for item in data['data']['products']:
@@ -37,7 +38,10 @@ def parseProductData(raw):
 			prod['ingredients'] = item['nutrition']['components'][0]['ingredients']
 			prod['nutritionFacts'] = [] 
 			for f in item['nutrition']['components'][0]['preparationStates'][0]['nutriFacts']:
-				prod['nutritionFacts'].append(f['name']+" "+f['value']+f['abbreviation'])
+				if f['name'].lower() == "calories":
+					prod['calories'] = "Calories: "+f['value']
+				else:
+					prod['nutritionFacts'].append(f['name']+" "+f['value']+f['abbreviation'])
 		except KeyError:
 			prod['nutrition'] = "No nutrition info found"
 
@@ -53,7 +57,7 @@ def parseProductData(raw):
 		parsed.append(prod)
 
 	#print(parsed)
-	return parsed
+	return parsed 
 
 
 def getProductInfo(ids):
