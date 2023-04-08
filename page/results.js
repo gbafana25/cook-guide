@@ -1,16 +1,23 @@
 function getKey() {
 	let name = "apikey=";
-	let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
-	return matches ? decodeURIComponent(matches[1]) : undefined;
+	let decodedCookie = decodeURIComponent(document.cookie);
+    	let ca = decodedCookie.split(';');
+      	for(let i = 0; i <ca.length; i++) {
+        	let c = ca[i];
+	      	while (c.charAt(0) == ' ') {
+	        	c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
 }
 
 function displayItems() {
 	const full = new URL(window.location.toLocaleString()).searchParams;
-	//console.log(full.get('searchTerm'));
-	//var k = getKey();
-	//console.log(k);
-	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults'), "key":full.get('key')};
+	var k = getKey();
+	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults'), "key":k};
 	let a = document.getElementById('item-list');
 
 	fetch("http://localhost:5000/find-item", {

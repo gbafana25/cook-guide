@@ -20,8 +20,9 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 **Note: For rate limiting, find out if switching the user agent circumvents it.  If thiis would be used to deploy as a service, it would not be able to accept a high volume of requests exceeding that of a normal browser**
 
+## Testing/Development
+- run a mock http server (`python3 -m http.server`), since chromium doesn't allow cookies to be set by static html/js files
 
 ## TODO:
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
-- fix: cookie setting doesn't work in chromium
-- add function in `results.js` to read key cookie and make request
+- add data to api object model (num. requests), add endpoints to allow users to save items
