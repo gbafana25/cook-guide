@@ -2,23 +2,50 @@
 
 from flask import Flask, request
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 import requests
 #import hyvee_api as hyvee
+import secrets
 import bakers_api as bakers
-import os
-import pytesseract
-import cv2
 import json
-import shutil
 
-pytesseract.tessearct_cmd = "tesseract"
+KEY_LENGTH = 45
 
 app = Flask(__name__)
 CORS(app)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///keys.sqlite3"
+db = SQLAlchemy(app)
+
+class ApiObject(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	key = db.Column(db.String(KEY_LENGTH))
+
+	def __init__(self, key):
+		self.key = key
+
+def generateAPIKey():
+	return secrets.token_urlsafe(KEY_LENGTH)	
+
+#@app.route("/check", methods=['POST'])
+def isValidKey(k):
+	#j = json.loads(request.data)
+
+	a = ApiObject.query.filter_by(key = k).all()
+
+	if not a:
+		return False
+	else:
+		return True
+
 @app.errorhandler(400)
 def badRequestType():
 	return {"status":"failed", "msg":"Bad request type"}, 400
+
+
+@app.errorhandler(406)
+def badApiKey():
+	return {"status":"failed", "msg":"bad api key"}, 406
 
 
 @app.route("/find-item", methods=["POST"])
@@ -27,6 +54,9 @@ def findItem():
 		return badRequestType()		
 		
 	data = json.loads(request.data)
+	if isValidKey(data['key']) == False:
+		return badApiKey()
+
 	#resp = hyvee.runQuery(data['searchTerm'], data['numResults'])		
 	ids = bakers.getProductIds(data['searchTerm'], data['numResults'])
 	#ids = hyvee.getProductIds(resp)
@@ -35,80 +65,26 @@ def findItem():
 
 	return output 
 
-def parseNutritionLabel(img, start):
-	d = []
-	d.append(img[start+2]+" "+img[start+3]+" "+img[start+4]+" "+img[start+5])
-	for i in range(start, len(img)):
-		img[i] = img[i].lower()
-		if img[i] == "serving" and img[i+1] == "size":
-			d.append("Serving size: "+img[i+2]+" "+img[i+3]+" "+img[i+4])
-		elif img[i] == "calories":
-			d.append("Calories: "+img[i+1])
-		elif img[i] == "fiber":
-			d.append(img[i]+" "+img[i+1])
+@app.route("/gen-api-key")
+def query_test():
+	k = generateAPIKey()
+	a = ApiObject(k)
+	db.session.add(a)
+	db.session.commit()
 
-	return d
-	
-@app.route("/ingredients", methods=["POST"])
-def getIngredients():
-	if request.method != "POST":
-		return badRequestType()
-	data = json.loads(request.data)
-	image_urls = data['urls']
-	for im in image_urls:
-		r = requests.get(im, stream=True)
-		r.raw.decode_content = True
+	return {"status": "success", "msg": "key created", "key": k}
 
-		# delete temp.jpg when finished
-
-		with open("temp.jpg", "wb+") as temp_img:
-			shutil.copyfileobj(r.raw, temp_img)
-
-		
-		# not all info from labels appears in array
-		# image should also be displayed in frontend for now
-		imgtext = pytesseract.image_to_string("temp.jpg")
-		start = imgtext.replace('\n', ' ').split(' ')
-		#print(start)
-		if start[0][:10].lower() == "ingredients" or start[0][:3].lower() == "made":
-			return {"ingredients":imgtext} 
-
-	os.remove("temp.jpg")
-	return {"status":"failed", "msg":"no ingredients list found"}
-
-@app.route("/nutrition", methods=["POST"])
-def getNutritionFacts():
-	if request.method != "POST":
-		return badRequestType()
-	
-	data = json.loads(request.data)
-	image_urls = data['urls']
-	for im in image_urls:
-		r = requests.get(im, stream=True)
-		r.raw.decode_content = True
-
-		# delete temp.jpg when finished
-
-		with open("temp.jpg", "wb+") as temp_img:
-			shutil.copyfileobj(r.raw, temp_img)
-
-		
-		# not all info from labels appears in array
-		# image should also be displayed in frontend for now
-		jpg = cv2.imread("temp.jpg")
-		imgtext = pytesseract.image_to_string(jpg)
-		imgtext = imgtext.replace('\n', ' ').split(' ')	
-		
-		#print(imgtext)
-		for i in range(len(imgtext)):
-			if imgtext[i].lower() == "nutrition" and imgtext[i+1].lower() == "facts":
-				return parseNutritionLabel(imgtext, i)
-
-	os.remove("temp.jpg")
-	return {"status":"failed"}
+"""
+	#ApiObject.query.all()
+	a = ApiObject("test two")
+	db.session.add(a)
+	db.session.commit()
+	return "successful write"
+"""
 
 
 if __name__ == "__main__":
+	#db.create_all()
 	app.run()
 
 

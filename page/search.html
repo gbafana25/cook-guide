@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="search.js"></script>
 
 <title>Search</title>
 
@@ -17,9 +18,18 @@
 	<div class="mt-5">
 	<label for="num" class="text-4xl px-15 py-10">Number of results:</label>
 	<input class="py-3 px-2 border rounded-lg text-sm" type="number" id="num" name="numResults" value="3" required><br>
+	<label>Set API key:</label>
+	<input type="text" id="key" name="key"><br>
 	</div>
+
+	
 	<button type"submit" class="mt-10 border rounded-lg px-8 py-2 bg-sky-200 font-semibold hover:bg-sky-500 duration-500">Search</button>
 </form>
 </div>
+		
+</div>
+<button onclick="saveKey()" type="button">Save key</button>
+</div>
 
 </body>
+

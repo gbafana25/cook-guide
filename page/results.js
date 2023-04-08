@@ -1,9 +1,16 @@
-
+function getKey() {
+	let name = "apikey=";
+	let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+	return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
 function displayItems() {
 	const full = new URL(window.location.toLocaleString()).searchParams;
 	//console.log(full.get('searchTerm'));
-	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults')};
+	//var k = getKey();
+	//console.log(k);
+	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults'), "key":full.get('key')};
 	let a = document.getElementById('item-list');
 
 	fetch("http://localhost:5000/find-item", {

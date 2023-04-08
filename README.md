@@ -22,7 +22,6 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 
 ## TODO:
-- start frontend
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
-- add any fields from baker's API as needed 
-
+- fix: cookie setting doesn't work in chromium
+- add function in `results.js` to read key cookie and make request

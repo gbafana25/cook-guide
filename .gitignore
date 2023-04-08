@@ -1,4 +1,6 @@
 *.swp
 env/
 __pycache__/
+key
+instance/
 

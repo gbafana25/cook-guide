@@ -52,7 +52,7 @@ def parseProductData(raw):
 
 		prod['urls'] = []
 		for u in item['item']['images']:
-			if "/large/" in u['url']:
+			if "large/front" in u['url']:
 				prod['urls'].append(u['url'])
 		parsed.append(prod)
 
