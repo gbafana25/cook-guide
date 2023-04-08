@@ -1,6 +1,8 @@
 *.swp
-env/
+*env/
 __pycache__/
 key
 instance/
-
+*.sqlite3
+*.log
+*.pyc
