@@ -25,4 +25,4 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 ## TODO:
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
-- add data to api object model (num. requests), add endpoints to allow users to save items
+- finish switch over to django, decide whether frontend should be served by django or not

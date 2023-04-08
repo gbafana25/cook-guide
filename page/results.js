@@ -20,7 +20,7 @@ function displayItems() {
 	const query = {"searchTerm":full.get('searchTerm'), "numResults":full.get('numResults'), "key":k};
 	let a = document.getElementById('item-list');
 
-	fetch("http://localhost:5000/find-item", {
+	fetch("http://localhost:8000/find-item", {
 		method: "POST",
 		mode: "cors",
 		headers: {
@@ -34,7 +34,7 @@ function displayItems() {
 		let list = document.querySelector("#basic-info").innerHTML;
 
 		let data = {
-			"products": dis,
+			"products": dis.products,
 		};
 
 		let scr = Handlebars.compile(list);
