@@ -33,8 +33,10 @@
 
 	<div class="block ml-40">
 	<img class="object-contain mr-10 h-80 w-90 object-right rounded-xl shadow-xl p-4" src="{{ url }}" alt="{{ product.name }}">
-	<button class="ml-10 mt-20 p-4 px-7 rounded-xl bg-red-600 text-white duration-500 hover:bg-red-400">Add</button>
-	<div>
+	<form action="/add/{{ product.name }}" method="post">
+	{% csrf_token %}
+	<button class="ml-10 mt-20 p-4 px-7 rounded-xl bg-red-600 text-white duration-500 hover:bg-red-400" >Add</button>
+	</form>
 	</div>
 </script>
 

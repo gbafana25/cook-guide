@@ -25,3 +25,4 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 ## TODO:
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
+- add cart view for added products

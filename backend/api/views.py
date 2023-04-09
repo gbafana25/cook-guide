@@ -30,7 +30,7 @@ def search(request):
 			# make this part less redundant, but works as intended now
 
 			# if api key is not in a cookie, use the one in the form
-			if 'apiKey' in request.COOKIES:#request.COOKIES['apiKey'] != "":
+			if 'apiKey' in request.COOKIES:
 				if isValidKey(request.COOKIES['apiKey']) == False:
 					return HttpResponse("fail")
 				else:
@@ -57,7 +57,7 @@ def search(request):
 
 					response = render(request, 'api/results.html', {"products": k.current_search['products'], "key":k.key})
 
-					if 'apiKey' not in request.COOKIES:#request.COOKIES['apiKey'] == "":
+					if 'apiKey' not in request.COOKIES:
 						now = datetime.now()
 						future = datetime(now.year+1, now.month, now.day)
 						response.set_cookie('apiKey', seform.cleaned_data['apiKey'], expires=future)
@@ -84,7 +84,21 @@ def product_view(request, name):
 			url = u		
 
 	return render(request, "api/product-view.html", {"product": p, "url":url})	
+def addProduct(request, name):
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+	if k.item_list == None:
+		k.item_list = {}
 
+	if 'items' not in k.item_list:
+		k.item_list['items'] = []
+
+	if name not in k.item_list['items']:
+		k.item_list['items'].append(name)
+
+	k.save()
+
+	return HttpResponse(k.item_list['items'])
 
 def isValidKey(k):
 	try:
