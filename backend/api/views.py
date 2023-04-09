@@ -1,34 +1,106 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
+import secrets
 import bakers_api as bakers
 import json
+from datetime import datetime
+
+from .models import ApiKey
+from .forms import SearchForm
+
+KEY_LENGTH = 45
 
 # Create your views here.
-@csrf_exempt
-def findItem(request):
-	if request.method != "POST":	
-		return HttpResponse("fail")		
-		
-	data = json.loads(request.body.decode('utf-8'))
-	"""
-	if isValidKey(data['key']) == False:
-		return HttpResponse("fail")
-	"""
+#@csrf_exempt
+def results(key, term, num):	
 
-	ids = bakers.getProductIds(data['searchTerm'], data['numResults'])
+	ids = bakers.getProductIds(term, num)
 	output = bakers.getProductInfo(ids)
 
 	#return HttpResponse(json.dumps(output), content_type="application/json")
-	return JsonResponse(output)
+	return output
+
+def search(request):
+	if request.method == "POST":
+		seform = SearchForm(request.POST)
+		if seform.is_valid():	
+			
+			# make this part less redundant, but works as intended now
+
+			# if api key is not in a cookie, use the one in the form
+			if 'apiKey' in request.COOKIES:#request.COOKIES['apiKey'] != "":
+				if isValidKey(request.COOKIES['apiKey']) == False:
+					return HttpResponse("fail")
+				else:
+					out = results(request.COOKIES['apiKey'], seform.cleaned_data['searchTerm'], seform.cleaned_data['numResults'])
+
+					k = ApiKey.objects.get(key=request.COOKIES['apiKey'])
+					k.current_search = out
+					k.save()
+
+					response = render(request, 'api/results.html', {"products": k.current_search['products'], "key":k.key})
+	
+					return response
+			
+			else:
+				if isValidKey(seform.cleaned_data['apiKey']) == False:
+					return HttpResponse("fail")
+				else:
+
+					out = results(seform.cleaned_data['apiKey'], seform.cleaned_data['searchTerm'], seform.cleaned_data['numResults'])
+
+					k = ApiKey.objects.get(key=seform.cleaned_data['apiKey'])
+					k.current_search = out
+					k.save()
+
+					response = render(request, 'api/results.html', {"products": k.current_search['products'], "key":k.key})
+
+					if 'apiKey' not in request.COOKIES:#request.COOKIES['apiKey'] == "":
+						now = datetime.now()
+						future = datetime(now.year+1, now.month, now.day)
+						response.set_cookie('apiKey', seform.cleaned_data['apiKey'], expires=future)
+			
+					return response 
+	else:
+		return render(request, "api/search.html", {})
+
+	return render(request, "api/search.html", {})
+
+
+
+def product_view(request, name):
+	# change to product id (upc)
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+	p = {}
+	url = ''
+	for prod in k.current_search['products']:
+		if prod['name'] == name:
+			p = prod
+	for u in p['urls']:
+		if "large/front" in u:
+			url = u		
+
+	return render(request, "api/product-view.html", {"product": p, "url":url})	
+
 
 def isValidKey(k):
-	#j = json.loads(request.data)
-
-	a = ApiObject.query.filter_by(key = k).all()
-
-	if not a:
-		return False
-	else:
+	try:
+		obj = ApiKey.objects.get(key=k)
+		obj.num_requests += 1
+		obj.save()
 		return True
+	except:
+		return False
+
+
+def generateAPIKey(request):
+	k = secrets.token_urlsafe(KEY_LENGTH)
+	api_key = ApiKey.objects.create(key=k)
+	api_key.save()
+
+	return JsonResponse({"key": k})	
+
+

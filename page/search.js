@@ -12,6 +12,5 @@ function saveKey() {
 	//console.log(`${document.cookie}`);
 	//console.log(c);
 	document.cookie = c;
-	console.log(document.cookie);
 
 }

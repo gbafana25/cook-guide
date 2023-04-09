@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>Search</title>
+
+<body>
+
+
+<h1 id='title' class="font-mono text-slate-900 bg-blue-500 font-bold text-7xl px-20 py-20 shadow-lg italic">Search</h1>
+
+<div class="text-center items-center font-mono py-20 font-bold text-slate-900">
+<form action="/search" method="post">
+	{% csrf_token %}
+	<div class="mt-5">
+	<label for="searchbox" class="text-4xl mr-10">Item:</label>
+	<input class="px-2 py-3 mb-5 border rounded-lg text-sm" type="text" id="searchbox" name="searchTerm" value="{{ searchTerm }}" required><br>
+	</div>
+	<div class="mt-5">
+	<label for="num" class="text-4xl px-15 py-10">Number of results:</label>
+	<input class="py-3 px-2 border rounded-lg text-sm" type="number" id="num" name="numResults" value="{{ numResults }}" required><br>
+
+	<label class="text-4xl px-15 py-10">Set API key:</label>
+	<input class="py-3 px-2 border rounded-lg text-sm" type="text" id="key" name="apiKey" value="{{ apiKey }}"><br>
+	
+	</div>
+
+	
+	<button type"submit" class="mt-10 border rounded-lg px-8 py-2 bg-sky-200 font-semibold hover:bg-sky-500 duration-500">Search</button>
+</form>
+</div>
+		
+
+</body>
+
