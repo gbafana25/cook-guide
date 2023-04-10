@@ -85,6 +85,7 @@ def product_view(request, name):
 
 	return render(request, "api/product-view.html", {"product": p, "url":url})	
 def addProduct(request, name):
+	# change request path to accept string of json object?
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
 	if k.item_list == None:
@@ -93,12 +94,22 @@ def addProduct(request, name):
 	if 'items' not in k.item_list:
 		k.item_list['items'] = []
 
+	# add entire item's json object, not just name
 	if name not in k.item_list['items']:
 		k.item_list['items'].append(name)
 
 	k.save()
 
-	return HttpResponse(k.item_list['items'])
+	return HttpResponse("success")
+	#return HttpResponse(k.item_list['items'])
+
+def loadCart(request):
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+
+	#return HttpResponse(k.item_list['items'])
+	return render(request, 'api/cart.html', {'items':k.item_list['items']})
+
 
 def isValidKey(k):
 	try:
