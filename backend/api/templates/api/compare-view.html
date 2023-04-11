@@ -1,0 +1,25 @@
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>Compare Items</title>
+
+<body>
+
+
+<h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">Compare Items</h1>
+
+<div class="flex">
+	{% for i in items %}
+	<div class="px-30 shadow-xl p-4 pt-8">
+		<h2>{{ i.name }}</h2>
+		<h3>{{ i.price }}</h3>	
+		<p>{{ i.calories }}</p>
+		{% for f in i.nutritionFacts %}
+		<p>{{ f }}</p>
+		{% endfor %}
+	</div>
+	{% endfor %}
+</div>
+
+</body>
+
+

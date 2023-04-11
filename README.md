@@ -24,5 +24,5 @@ Two requests are required in order to get a list of potential products. Each Gra
 - run a mock http server (`python3 -m http.server`), since chromium doesn't allow cookies to be set by static html/js files
 
 ## TODO:
+- finish styling compare view
 - improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
-- add cart view for added products

@@ -88,27 +88,51 @@ def addProduct(request, name):
 	# change request path to accept string of json object?
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
+	# find name in current request, then add object to list
+	#print(name)
 	if k.item_list == None:
 		k.item_list = {}
 
 	if 'items' not in k.item_list:
 		k.item_list['items'] = []
 
-	# add entire item's json object, not just name
-	if name not in k.item_list['items']:
-		k.item_list['items'].append(name)
+	for p in k.current_search['products']:
+		if p['name'] == name:
+			k.item_list['items'].append(p)
+			k.save()
+			return HttpResponse("success")
+
 
 	k.save()
-
-	return HttpResponse("success")
-	#return HttpResponse(k.item_list['items'])
+	return HttpResponse("fail")
+	
 
 def loadCart(request):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
 
 	#return HttpResponse(k.item_list['items'])
+	# compare flag might not be necessary
+	for i in k.item_list['items']:
+		i['compare'] = False
+	k.save()
+
 	return render(request, 'api/cart.html', {'items':k.item_list['items']})
+
+def compareItems(request):
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+
+	chosen = []
+
+	for i in range(len(k.item_list['items'])):
+		if k.item_list['items'][i]['name'] in request.POST:
+			#print(k.item_list['items'][i]['name'])
+			#k.item_list['items'][i]['compare'] = True
+			chosen.append(k.item_list['items'][i])
+
+	#return HttpResponse(request.POST)
+	return render(request, 'api/compare-view.html', {'items':chosen})
 
 
 def isValidKey(k):
