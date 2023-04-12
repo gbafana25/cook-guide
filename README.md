@@ -11,18 +11,19 @@ Use Flask as backend to interact with store's API.  Use React on frontend (hopef
 	- data from search querys can also be saved to reduce API requests (rate limits unknown)
 - Reminder: can get rate limited if same request (search term is reused) is made multiple times. Changing the search term seems to immediately fix it.
 
-## About Hy-Vee GraphQL API
+## About Baker's (Kroger) REST API
+
+Both the Hyvee and Baker's APIs work in similar ways, in that they have a two-step process for obtaining product data.  First, the search query is sent to an endpoint that returns a list of product ids.  Then, a second request is made with the product ids, which then returns the data on all products.  The full article on this API's driver can be found [here](https://dev.to/gbafana25/undocumented-apis-in-websites-42g6)
+
+## About Hy-Vee GraphQL API (not used anymore)
 
 Two requests are required in order to get a list of potential products. Each GraphQL query is stored in a JSON format in the project's home directory.
 
 1. Get product IDs from first endpoint, `/GetProductsAndFiltersFromElasticsearch`.  These IDs are then passed to the 2nd call.
 2. product matches: returns basic product info (price, name, size, aisle/location, whether it's on sale, etc.) as well as images
 
-**Note: For rate limiting, find out if switching the user agent circumvents it.  If thiis would be used to deploy as a service, it would not be able to accept a high volume of requests exceeding that of a normal browser**
 
 ## Testing/Development
 - run a mock http server (`python3 -m http.server`), since chromium doesn't allow cookies to be set by static html/js files
 
 ## TODO:
-- fix weird image alignment in cart
-- improve parsing of nutrition labels, add for ingredient labels (only for hyvee api, since baker's already provides info in text form)
