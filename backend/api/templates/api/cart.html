@@ -7,25 +7,33 @@
 
 <h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">Cart</h1>
 
+
 <form action="/compare" method="POST">
 {% csrf_token %}
-<div class="block mx-40">
+<div class="block mx-40 mr-10 ">
 	{% for i in items %}	
-	<div class="flex flex-row shadow-xl">
+	<div class="divide-y-5 divide-green-500 divide-solid">
+	<div class=" flex flex-row justify-items-stretch">
 	<div class="p-5">
 	<h2 class="text-2xl">{{ i.name }}</h2>
 	<h3 class="text-xl font-bold mt-3">{{ i.price }}</h3>
 	</div>
-	<div class="flex">
-	<img class="object-right object-contain h-40 w-30 px-5 py-5 ml-80" src="{{ i.urls.1 }}" alt="{{ i.name }}">	
-	<div class="mt-10 ml-40">
+	<div class="flex ml-80 justify-between">
+	<img class="object-right object-contain h-40 w-30 px-5 py-5" src="{{ i.urls.1 }}" alt="{{ i.name }}">	
+	<div class="mt-10">
 	<label for="{{ i.name }}">Compare: </label>
 	<input type="checkbox" name="{{ i.name }}" id="{{ i.name }}"></input>
+	<form action="/delete/{{ i.name }}" method="POST">
+	{% csrf_token %}
+	<button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded-xl duration-500">Remove</button>
+	</form>
+	</div>
 	</div>
 	</div>
 	</div>
 	{% endfor %}
-	<button type="submit" class="hover:bg-sky-600">Compare Items</button>
+	
+	<button type="submit" class="mt-10 p-3 duration-500 font-bold bg-sky-200 rounded-lg hover:bg-sky-600">Compare Items</button>
 </div>
 </form>
 

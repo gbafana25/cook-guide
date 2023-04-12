@@ -85,7 +85,6 @@ def product_view(request, name):
 
 	return render(request, "api/product-view.html", {"product": p, "url":url})	
 def addProduct(request, name):
-	# change request path to accept string of json object?
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
 	# find name in current request, then add object to list
@@ -100,18 +99,32 @@ def addProduct(request, name):
 		if p['name'] == name:
 			k.item_list['items'].append(p)
 			k.save()
-			return HttpResponse("success")
+			return redirect('/cart')
+			#return HttpResponse("success")
 
 
 	k.save()
 	return HttpResponse("fail")
+
+def deleteProduct(request, name):	
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
 	
+	for p in range(len(k.item_list['items'])):
+		if k.item_list['items'][p]['name'] == name:
+			k.item_list['items'].pop(p)
+			k.save()	
+			#return HttpResponse("success")
+			return redirect('/cart')
+
+
+	k.save()
+	return HttpResponse("fail")
 
 def loadCart(request):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
 
-	#return HttpResponse(k.item_list['items'])
 	# compare flag might not be necessary
 	for i in k.item_list['items']:
 		i['compare'] = False
@@ -124,15 +137,22 @@ def compareItems(request):
 	k = ApiKey.objects.get(key=key)
 
 	chosen = []
+	cal_low = k.item_list['items'][0]['calories']
+	price_low = k.item_list['items'][0]['price']
 
 	for i in range(len(k.item_list['items'])):
-		if k.item_list['items'][i]['name'] in request.POST:
-			#print(k.item_list['items'][i]['name'])
-			#k.item_list['items'][i]['compare'] = True
+		item = k.item_list['items'][i]
+		if item['name'] in request.POST:
+			if 'calories' in item:
+				if item['calories'] < cal_low:
+					cal_low = item['calories']
+			if item['price'] < price_low:
+				price_low = item['price']
+
 			chosen.append(k.item_list['items'][i])
 
-	#return HttpResponse(request.POST)
-	return render(request, 'api/compare-view.html', {'items':chosen})
+
+	return render(request, 'api/compare-view.html', {'items':chosen, 'cal_low':cal_low, 'price_low':price_low})
 
 
 def isValidKey(k):

@@ -7,15 +7,30 @@
 
 <h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">Compare Items</h1>
 
-<div class="flex">
+<div class="flex justify-center">
 	{% for i in items %}
-	<div class="px-30 shadow-xl p-4 pt-8">
-		<h2>{{ i.name }}</h2>
-		<h3>{{ i.price }}</h3>	
-		<p>{{ i.calories }}</p>
+	<div class="px-30 border-red-300 divide-y divide-solid shadow-xl m-10 p-4 pt-8 w-80">
+		<div>
+		<h2 class="text-xl font-bold truncate">{{ i.name }}</h2>
+		{% if i.price == price_low %}
+		<h3 class="my-5 rounded-md hover:font-semibold hover:bg-green-500 duration-500 p-3">{{ i.price }}</h3>	
+		{% else %}
+		<h3 class="my-5 rounded-md hover:font-semibold hover:bg-yellow-500 duration-500 p-3">{{ i.price }}</h3>	
+		{% endif %}
+		{% if i.calories == cal_low %}
+		<p class="rounded-md duration-500 hover:font-bold hover:bg-green-500 my-5 p-2">{{ i.calories }}</p>
+		{% else %}
+		<p class="rounded-md duration-500 hover:bg-yellow-500 p-2 hover:font-bold my-5">{{ i.calories }}</p>
+		{% endif %}
+		</div>
+		<div class="rounded-md pt-5 hover:bg-slate-100 p-3 duration-500 hover:text-lg">
 		{% for f in i.nutritionFacts %}
 		<p>{{ f }}</p>
 		{% endfor %}
+		</div>
+		<div class="font-black pt-5 hover:bg-slate-100 text-xs duration-500 hover:text-base">
+		<p>{{ i.allergens }}</p>
+		</div>
 	</div>
 	{% endfor %}
 </div>
