@@ -79,9 +79,10 @@ def product_view(request, name):
 	for prod in k.current_search['products']:
 		if prod['name'] == name:
 			p = prod
-	for u in p['urls']:
-		if "large/front" in u:
-			url = u		
+	if 'urls' in p:
+		for u in p['urls']:
+			if "large/front" in u:
+				url = u		
 
 	return render(request, "api/product-view.html", {"product": p, "url":url})	
 def addProduct(request, name):
@@ -89,8 +90,8 @@ def addProduct(request, name):
 	k = ApiKey.objects.get(key=key)
 	# find name in current request, then add object to list
 	#print(name)
-	if k.item_list == None:
-		k.item_list = {}
+	if k.item_list == {} or k.item_list['items'] == {}:
+		k.item_list = {'items':[]}
 
 	if 'items' not in k.item_list:
 		k.item_list['items'] = []
@@ -109,6 +110,11 @@ def addProduct(request, name):
 def deleteProduct(request, name):	
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
+
+	if len(k.item_list['items']) == 1:
+		k.item_list['items'] = {}
+		k.save()
+		return redirect('/cart')
 	
 	for p in range(len(k.item_list['items'])):
 		if k.item_list['items'][p]['name'] == name:
@@ -135,9 +141,15 @@ def loadCart(request):
 def compareItems(request):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
+	
+	if len(k.item_list['items']) == 0:
+		return redirect('/cart')
 
 	chosen = []
-	cal_low = k.item_list['items'][0]['calories']
+	cal_low = ""
+	if 'calories' in k.item_list['items'][0]:
+		cal_low = k.item_list['items'][0]['calories']
+
 	price_low = k.item_list['items'][0]['price']
 
 	for i in range(len(k.item_list['items'])):
@@ -146,9 +158,9 @@ def compareItems(request):
 			if 'calories' in item:
 				if item['calories'] < cal_low:
 					cal_low = item['calories']
-			if item['price'] < price_low:
+			if float(item['price'][1:]) < float(price_low[1:]):
 				price_low = item['price']
-
+		
 			chosen.append(k.item_list['items'][i])
 
 

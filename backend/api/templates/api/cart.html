@@ -23,17 +23,23 @@
 	<div class="mt-10">
 	<label for="{{ i.name }}">Compare: </label>
 	<input type="checkbox" name="{{ i.name }}" id="{{ i.name }}"></input>
+	<div>
 	<form action="/delete/{{ i.name }}" method="POST">
 	{% csrf_token %}
-	<button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded-xl duration-500">Remove</button>
+	<button formaction="/delete/{{ i.name }}" type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded-xl duration-500">Remove</button>
 	</form>
+	</div>
 	</div>
 	</div>
 	</div>
 	</div>
 	{% endfor %}
 	
+	{% if items|length != 0 %}
 	<button type="submit" class="mt-10 p-3 duration-500 font-bold bg-sky-200 rounded-lg hover:bg-sky-600">Compare Items</button>
+	{% else %}
+	<p class="text-center pt-20 text-xl font-semibold">No items in cart</p>
+	{% endif %}
 </div>
 </form>
 

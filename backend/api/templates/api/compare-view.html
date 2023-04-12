@@ -23,12 +23,12 @@
 		<p class="rounded-md duration-500 hover:bg-yellow-500 p-2 hover:font-bold my-5">{{ i.calories }}</p>
 		{% endif %}
 		</div>
-		<div class="rounded-md pt-5 hover:bg-slate-100 p-3 duration-500 hover:text-lg">
+		<div class="rounded-md pt-5 hover:bg-slate-100 p-3 duration-500 hover:text-lg hover:font-bold">
 		{% for f in i.nutritionFacts %}
 		<p>{{ f }}</p>
 		{% endfor %}
 		</div>
-		<div class="font-black pt-5 hover:bg-slate-100 text-xs duration-500 hover:text-base">
+		<div class="text-black font-normal pt-5 hover:bg-slate-100 text-xs duration-500 hover:text-base hover:font-bold">
 		<p>{{ i.allergens }}</p>
 		</div>
 	</div>
