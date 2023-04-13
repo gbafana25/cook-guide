@@ -1,15 +1,14 @@
 # cook-guide
 
-Gets product info using Hy-Vee's "hidden" GraphQL api.  Final app will allow users to make a grocery list, budget out items, and possibly view nutrition info.   
+Product info is retrieved Baker's REST API (the same one used by the website).  Users can build a shopping cart and compare items.
 
-Use Flask as backend to interact with store's API.  Use React on frontend (hopefully).
+## About
 
-## Layout
-- user does action to add item: search query is sent to Flask backend, which uses that to build GraphQL query for store's API
-- top options from product search are returned, user can compare and choose one
-- items' data is saved in current list, and also backed up to be included in future grocery lists
-	- data from search querys can also be saved to reduce API requests (rate limits unknown)
-- Reminder: can get rate limited if same request (search term is reused) is made multiple times. Changing the search term seems to immediately fix it.
+- `Apikey` object: holds randomly-generated string, number of requests made, results from last search, and the user's cart.
+- The API key is returned from the `gen-api-key` endpoint, and can be entered in the search page, where it is then saved as a cookie.
+- The search page returns a list of products and their prices.  Clicking on the item gives all of the product's information (nutrition info, allergens, category, picture, ingredients).
+- Users can add the item to the cart, and then are redirected to `/cart`
+- In the cart menu, users can select items to compare, change the quantity, and remove items
 
 ## About Baker's (Kroger) REST API
 
@@ -24,6 +23,15 @@ Two requests are required in order to get a list of potential products. Each Gra
 
 
 ## Testing/Development
-- run a mock http server (`python3 -m http.server`), since chromium doesn't allow cookies to be set by static html/js files
+- create a virtualenv and set it up: 
+```bash	
+
+python3 -m venv env
+source env/bin/activate
+pip3 install -r requirements.txt
+
+```
+- run the server: `cd backend && python3 manage.py runserver`
 
 ## TODO:
+- find way to export grocery list?

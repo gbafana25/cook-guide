@@ -13,23 +13,38 @@
 <div class="block mx-40 mr-10 ">
 	{% for i in items %}	
 	<div class="divide-y-5 divide-green-500 divide-solid">
-	<div class=" flex flex-row justify-items-stretch">
-	<div class="p-5">
+	<div class="flex flex-row justify-items-stretch">
+	<div class="truncate p-5">
 	<h2 class="text-2xl">{{ i.name }}</h2>
 	<h3 class="text-xl font-bold mt-3">{{ i.price }}</h3>
 	</div>
-	<div class="flex ml-80 justify-between">
+	<div class="flex ml-40 justify-between">
 	<img class="object-right object-contain h-40 w-30 px-5 py-5" src="{{ i.urls.1 }}" alt="{{ i.name }}">	
+	<div class="ml-10 mt-10">
+	<form method="POST">
+	{% csrf_token %}
+	<div class='flex ml-5 mt-4'>
+	<div class="mt-2">
+	<label for="q">Qty.: </label>
+	<input class="w-20" id="q" name="{{ i.name }}" min=0 placeholder="{{ i.quantity }}" type="number"></input>
+	</div>
+	<div class="ml-5 mr-10 w-30 text-black font-bold rounded-xl p-2 bg-sky-400 hover:bg-sky-600">
+	<button formaction="/quantity/{{ i.name }}" type="submit">Change Qty.</button>
+	</div>
+	</div>
+	</form>
+	</div>
 	<div class="mt-10">
 	<label for="{{ i.name }}">Compare: </label>
 	<input type="checkbox" name="{{ i.name }}" id="{{ i.name }}"></input>
 	<div>
-	<form action="/delete/{{ i.name }}" method="POST">
+	<form action="/delete/t{ i.name }}" method="POST">
 	{% csrf_token %}
 	<button formaction="/delete/{{ i.name }}" type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded-xl duration-500">Remove</button>
 	</form>
 	</div>
 	</div>
+
 	</div>
 	</div>
 	</div>

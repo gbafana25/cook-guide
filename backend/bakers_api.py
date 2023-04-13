@@ -32,6 +32,7 @@ def parseProductData(raw):
 		
 		# REMINDER: also could include nfor, nforprice, unit price, price
 		prod['price'] = item['price']['storePrices']['regular']['defaultDescription']
+		prod['original_price'] = prod['price']
 		try:
 			#prod['nutrition'] = item['nutrition']
 			prod['allergens'] = item['nutrition']['allergens']

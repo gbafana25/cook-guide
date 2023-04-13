@@ -89,7 +89,6 @@ def addProduct(request, name):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
 	# find name in current request, then add object to list
-	#print(name)
 	if k.item_list == {} or k.item_list['items'] == {}:
 		k.item_list = {'items':[]}
 
@@ -98,6 +97,7 @@ def addProduct(request, name):
 
 	for p in k.current_search['products']:
 		if p['name'] == name:
+			p['quantity'] = 1
 			k.item_list['items'].append(p)
 			k.save()
 			return redirect('/cart')
@@ -132,15 +132,44 @@ def loadCart(request):
 	k = ApiKey.objects.get(key=key)
 
 	# compare flag might not be necessary
+	"""
 	for i in k.item_list['items']:
 		i['compare'] = False
+	"""
 	k.save()
 
 	return render(request, 'api/cart.html', {'items':k.item_list['items']})
 
+def editQuantity(request, name):
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+
+	for item in k.item_list['items']:
+		if item['name'] == name:
+			if request.POST[name] != "":
+				# price should be updated as well
+				
+				new_quantity = int(request.POST[name])
+				old_quantity = item['quantity']
+				curr_price = float(item['price'][1:])
+
+				item['quantity'] = new_quantity
+
+				# edit price
+				if new_quantity == 1:
+					item['price'] = item['original_price']
+				else:
+					item['price'] = "$"+"{:.2f}".format(curr_price*new_quantity)
+					
+	
+	k.save()
+
+	return redirect('/cart')
+
 def compareItems(request):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
+	print(request.POST)
 	
 	if len(k.item_list['items']) == 0:
 		return redirect('/cart')
@@ -155,17 +184,20 @@ def compareItems(request):
 	for i in range(len(k.item_list['items'])):
 		item = k.item_list['items'][i]
 		if item['name'] in request.POST:
-			if 'calories' in item:
-				if item['calories'] < cal_low:
-					cal_low = item['calories']
-			if float(item['price'][1:]) < float(price_low[1:]):
-				price_low = item['price']
+			if request.POST[item['name']] == 'on':
+				if 'calories' in item:
+					if item['calories'] < cal_low:
+						cal_low = item['calories']
+				if float(item['price'][1:]) < float(price_low[1:]):
+					price_low = item['price']
 		
-			chosen.append(k.item_list['items'][i])
+				chosen.append(k.item_list['items'][i])
 
 
 	return render(request, 'api/compare-view.html', {'items':chosen, 'cal_low':cal_low, 'price_low':price_low})
 
+def home(request):
+	return render(request, 'api/home.html', {})
 
 def isValidKey(k):
 	try:

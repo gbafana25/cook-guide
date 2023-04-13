@@ -1,0 +1,22 @@
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>Home</title>
+
+<body>
+
+
+<h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic text-center">Grocery List Maker</h1>
+
+<div class="mt-40 flex justify-center space-x-20">
+
+<form action="/search" method="GET">
+{% csrf_token %}
+<button class="rounded-xl font-bold bg-lime-400 p-3 hover:bg-lime-500 duration-500" type="submit">Search Items</button>
+</form>
+
+<form action="/cart" method="GET">
+{% csrf_token %}
+<button class="bg-indigo-500 hover:bg-indigo-700 p-3 duration-500 font-bold text-white rounded-xl" type="submit">View Cart</button>
+</form>
+
+</div>
