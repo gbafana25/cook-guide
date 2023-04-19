@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
+import urllib.parse
 import secrets
 import bakers_api as bakers
 import json
@@ -169,7 +170,6 @@ def editQuantity(request, name):
 def compareItems(request):
 	key = request.COOKIES['apiKey']
 	k = ApiKey.objects.get(key=key)
-	print(request.POST)
 	
 	if len(k.item_list['items']) == 0:
 		return redirect('/cart')
@@ -198,6 +198,30 @@ def compareItems(request):
 
 def home(request):
 	return render(request, 'api/home.html', {})
+
+
+def export_menu(request):
+	key = request.COOKIES['apiKey']
+	k = ApiKey.objects.get(key=key)
+
+	if request.method == 'POST':
+		opt = request.POST['format']
+		if opt == 'json':
+			#return HttpResponse(k.item_list['items'])
+			formatted = json.dumps(k.item_list['items'], indent=4)
+			return render(request, 'api/format-view.html', {'data':formatted})
+		elif opt == 'csv':
+			item_data = convertToCSV(k.item_list['items'])
+			#return HttpResponse(f'{item_data}')
+			return render(request, 'api/format-view.html', {'data':item_data})
+	else:
+		return render(request, 'api/export-menu.html', {})
+	
+def convertToCSV(items):
+	data = "name,price\r\n"
+	for it in items:
+		data += it['name']+','+it['price']+"\r\n"
+	return data
 
 def isValidKey(k):
 	try:

@@ -6,6 +6,7 @@ urlpatterns = [
 	path('gen-api-key', views.generateAPIKey, name='generate api key'),
 	path('search', views.search, name='search'),
 	path('results', views.results, name='results'),
+	path('export-menu', views.export_menu, name='export menu'),
 	path('view/<str:name>', views.product_view, name='view'),
 	path('add/<str:name>', views.addProduct, name='add product'),
 	path('delete/<str:name>', views.deleteProduct, name='delete product'),

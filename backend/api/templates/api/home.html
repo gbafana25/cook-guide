@@ -19,4 +19,9 @@
 <button class="bg-indigo-500 hover:bg-indigo-700 p-3 duration-500 font-bold text-white rounded-xl" type="submit">View Cart</button>
 </form>
 
+<form action="/export-menu" method="GET">
+{% csrf_token %}
+<button class="bg-red-500 hover:bg-red-700 p-3 duration-500 font-bold text-white rounded-xl" type="submit">Export Cart Data</button>
+</form>
+
 </div>

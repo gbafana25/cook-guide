@@ -55,8 +55,12 @@
 	{% else %}
 	<p class="text-center pt-20 text-xl font-semibold">No items in cart</p>
 	{% endif %}
-</div>
 </form>
+<form action="/export-menu" method="GET">
+{% csrf_token %}
+<button class="mt-5 bg-red-500 hover:bg-red-700 p-3 duration-500 font-bold text-white rounded-xl" type="submit">Export Cart Data</button>
+</form>
+</div>
 
 </body>
 
