@@ -5,7 +5,9 @@
 <body>
 
 
-<h1 class="font-mono text-slate-900 bg-blue-500 font-bold text-5xl px-20 py-20 shadow-lg italic">Cart</h1>
+<div class="p-5 mx-3 mt-7 mb-8 rounded-xl shadow-md duration-500 bg-slate-700 text-white font-mono font-bold text-4xl italic text-center hover:shadow-xl">
+<h1>Cart</h1>
+</div>
 
 
 <form action="/compare" method="POST">
@@ -20,7 +22,8 @@
 	</div>
 	<div class="flex ml-40 justify-between">
 	<img class="object-right object-contain h-40 w-30 px-5 py-5" src="{{ i.urls.1 }}" alt="{{ i.name }}">	
-	<div class="ml-10 mt-10">
+	</div>
+	</div>
 	<form method="POST">
 	{% csrf_token %}
 	<div class='flex ml-5 mt-4'>
@@ -34,20 +37,18 @@
 	</div>
 	</form>
 	</div>
+	
 	<div class="mt-10">
 	<label for="{{ i.name }}">Compare: </label>
 	<input type="checkbox" name="{{ i.name }}" id="{{ i.name }}"></input>
+	</div>
 	<div>
 	<form action="/delete/t{ i.name }}" method="POST">
 	{% csrf_token %}
 	<button formaction="/delete/{{ i.name }}" type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold p-2 rounded-xl duration-500">Remove</button>
 	</form>
 	</div>
-	</div>
 
-	</div>
-	</div>
-	</div>
 	{% endfor %}
 	
 	{% if items|length != 0 %}

@@ -175,9 +175,11 @@ def compareItems(request):
 		return redirect('/cart')
 
 	chosen = []
-	cal_low = ""
+	cal_low = "Calories: 999999"
+	"""
 	if 'calories' in k.item_list['items'][0]:
 		cal_low = k.item_list['items'][0]['calories']
+	"""
 
 	price_low = k.item_list['items'][0]['price']
 
@@ -186,7 +188,7 @@ def compareItems(request):
 		if item['name'] in request.POST:
 			if request.POST[item['name']] == 'on':
 				if 'calories' in item:
-					if item['calories'] < cal_low:
+					if int(item['calories'][9:]) < int(cal_low[9:]):
 						cal_low = item['calories']
 				if float(item['price'][1:]) < float(price_low[1:]):
 					price_low = item['price']
@@ -218,9 +220,9 @@ def export_menu(request):
 		return render(request, 'api/export-menu.html', {})
 	
 def convertToCSV(items):
-	data = "name,price\r\n"
+	data = "name,price\n"
 	for it in items:
-		data += it['name']+','+it['price']+"\r\n"
+		data += it['name']+','+it['price']+"\n"
 	return data
 
 def isValidKey(k):

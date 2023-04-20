@@ -34,4 +34,6 @@ pip3 install -r requirements.txt
 - run the server: `cd backend && python3 manage.py runserver`
 
 ## TODO:
+- fix cart styling
 - get csv export format to retain newlines
+- add recipe creator

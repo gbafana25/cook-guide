@@ -72,15 +72,3 @@ def getProductInfo(ids):
 	return parseProductData(req.text)
 
 
-"""
-upcs = getProductIds("bread", 2)
-parsed_data = getProductInfo(upcs)
-
-for item in parsed_data:
-	print(item['name'])
-	print(item['price'])
-	for i in item['categories']:
-		print(i)
-	#print(item['nutrition']['components'][0]['ingredients'])
-	print()
-"""
